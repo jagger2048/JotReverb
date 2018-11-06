@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27703.2000
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JotReverb", "JotReverb\JotReverb.vcxproj", "{AFFDA8B6-5CB7-42E4-B5FB-553D003B77C9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FreeReverb", "FreeReverb\FreeReverb.vcxproj", "{BB28D4E4-DDA5-4CC4-B28F-0EF8C2010282}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{AFFDA8B6-5CB7-42E4-B5FB-553D003B77C9}.Release|x64.Build.0 = Release|x64
 		{AFFDA8B6-5CB7-42E4-B5FB-553D003B77C9}.Release|x86.ActiveCfg = Release|Win32
 		{AFFDA8B6-5CB7-42E4-B5FB-553D003B77C9}.Release|x86.Build.0 = Release|Win32
+		{BB28D4E4-DDA5-4CC4-B28F-0EF8C2010282}.Debug|x64.ActiveCfg = Debug|x64
+		{BB28D4E4-DDA5-4CC4-B28F-0EF8C2010282}.Debug|x64.Build.0 = Debug|x64
+		{BB28D4E4-DDA5-4CC4-B28F-0EF8C2010282}.Debug|x86.ActiveCfg = Debug|Win32
+		{BB28D4E4-DDA5-4CC4-B28F-0EF8C2010282}.Debug|x86.Build.0 = Debug|Win32
+		{BB28D4E4-DDA5-4CC4-B28F-0EF8C2010282}.Release|x64.ActiveCfg = Release|x64
+		{BB28D4E4-DDA5-4CC4-B28F-0EF8C2010282}.Release|x64.Build.0 = Release|x64
+		{BB28D4E4-DDA5-4CC4-B28F-0EF8C2010282}.Release|x86.ActiveCfg = Release|Win32
+		{BB28D4E4-DDA5-4CC4-B28F-0EF8C2010282}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
