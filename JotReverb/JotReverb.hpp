@@ -5,8 +5,10 @@ class JotReverb {
 public:
 	double fs = 48000;
 	int nFrame = 256;						// the number fo data in per frame
-	double Un[4] = { 0.4,0.2,0.6,0.8 };
-	double J4[4][4] = { { 0,0,1,0 },{ 0,1,0,0 },{ 1,0,0,0 },{ 0,0,0,1 } };
+	//double Un[4] = { 0.4,0.2,0.6,0.8 };
+	double Un[4] = { 1,1,1,1 };
+	//double J4[4][4] = { { 0,0,1,0 },{ 0,1,0,0 },{ 1,0,0,0 },{ 0,0,0,1 } };
+	double J4[4][4] = { { 1,0,0,0 },{ 0,1,0,0 },{ 0,0,1,0 },{ 0,0,0,1 } };
 	double gain_b[4] = { 0.25,0.25,0.25,0.25 };
 	double gain_c[4] = { 1,1,1,1 };
 	double delay_length[4] = { 2205,6615,3087,8820 };
@@ -31,7 +33,7 @@ public:
 	double updateLpfCoeff();				// compute the lpf coeff
 	int init();
 	int delay_by_samples(double in, double &after_delay, unsigned int &cur_delay_pos, unsigned int N, double *delay_line);
-	int process(vector<double> data_in, vector<double>&data_out);
+	int process(std::vector<double> data_in, std::vector<double>&data_out);
 };
 
 
@@ -42,17 +44,22 @@ void JotReverb::updateAn()
 	*/
 	unsigned int nChannel = 4;
 	double sum_temp = 0;
-	for (size_t nCount = 0; nCount != nChannel; ++nCount) {
-		sum_temp += Un[nCount] * Un[nCount];											// compute the matix Un*Un'
+	// compute the matix Un*Un'	,note that Un is a column vector
+	// assume the Un has 4 rows
+	double temp_matrix[4][4] = { 0 };
+	for (size_t nRow = 0; nRow != 4; ++nRow) {
+		for (size_t nColumn = 0; nColumn != 4; ++nColumn) {
+			temp_matrix[nRow][nColumn] = Un[nColumn] * Un[nColumn];
+		}
 	}
-	for (size_t nCloumn = 0; nCloumn != nChannel; ++nCloumn) {
-		for (size_t nRow = 0; nRow != nChannel; ++nRow) {
-			An[nRow][nCloumn] = J4[nRow][nCloumn] - 2 / (double)nChannel * sum_temp;	// An = J4 - 2/n *(Un*Un');
+	for (size_t nRow = 0; nRow != nChannel; ++nRow) {
+		for (size_t nColumn = 0; nColumn != nChannel; ++nColumn) {
+			An[nRow][nColumn] = J4[nRow][nColumn] - 2 / (double)nChannel * temp_matrix[nRow][nColumn];	// An = J4 - 2/n *(Un*Un');
 		}
 	}
 }
 
-int JotReverb::process(vector<double> data_in, vector<double>& data_out)
+int JotReverb::process(std::vector<double> data_in, std::vector<double>& data_out)
 {
 	/*
 	Description	:	Jot reverberator core processing process

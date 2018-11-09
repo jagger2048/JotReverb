@@ -86,9 +86,10 @@ private:
 inline int myFreeReverb::init()
 {
 	// initialize the low_feedback comb filter and allpass filter
-	setDamp(0.6);
-	setFeedback(0.4);
+	setDamp(0.84);
+	setFeedback(0.2);
 	setApplassGain(0.5);
+
 	for (size_t nAp = 0; nAp != 4; nAp++) {
 		cascaded_ap[nAp].init(allpass_gain, ap_coef[nAp]);
 	}
