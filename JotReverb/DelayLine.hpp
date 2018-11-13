@@ -11,7 +11,9 @@ public:
 	double delay_by_sample(double data_to_push);
 	double getEnd();
 	int init(unsigned int N);
-
+	double getSample(unsigned int N) {
+		return delay_line[(cur_pos + N ) % delay_line_length];
+	}
 private:
 	unsigned int cur_pos = 0;
 	unsigned int delay_line_length;
