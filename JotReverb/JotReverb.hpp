@@ -14,7 +14,7 @@ public:
 	double J4[4][4] = { { 1,0,0,0 },{ 0,1,0,0 },{ 0,0,1,0 },{ 0,0,0,1 } };
 	double gain_b[4] = { 0.25,0.25,0.25,0.25 };
 	double gain_c[4] = { 1,1,1,1 };
-	double delay_length[4] = { 2205,6615,3087,8820 };
+	double delay_length[4] = { 3089,3187,3323,3407 };
 	double dry_wet_mix_rate = 0.5;
 
 	// lpf coef 

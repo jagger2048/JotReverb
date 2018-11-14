@@ -1,24 +1,6 @@
 // fender's reverb based on FDN algorithm
 // in-> to mono -> predelay-> prelpf -> FDN -> steteo output
-#include "DelayLine.hpp"
-class FenderReverb:public FDN
-{
-public:
-	FenderReverb:public FDN();
-	~FenderReverb:public FDN();
-
-private:
-
-};
-
-FenderReverb:public FDN::FenderReverb:public FDN()
-{
-}
-
-FenderReverb:public FDN::~FenderReverb:public FDN()
-{
-}
-
+#include <vector>
 //  biquad
 class Biquad {
 public:
@@ -26,11 +8,20 @@ public:
 	double state[3] = { 0 };
 
 	int setCoeffs(double *b, double *a);
+	int setCoeffs(double **_ba) {
+		for (size_t i = 0; i < 2; i++)
+		{
+			for (size_t j = 0; j < 3; j++)
+			{
+				coeffs[i][j] = _ba[i][j];
+			}
+		}
+	}
 	int reset();
 	double filter(double input);
 	//double filter(vector<double> input, vector<double> &output);
-	Biquad();
-	~Biquad();
+	Biquad() {};
+	~Biquad() {};
 };
 
 int Biquad::setCoeffs(double * b, double * a)
@@ -59,13 +50,6 @@ double Biquad::filter(double input)
 	return output;
 }
 
-//double Biquad::filter(vector<double> input, vector<double>& output)
-//{
-//	for (int n = 0; n != input.size(); ++n) {
-//		Biquad::filter(input.at(n), output.at(n));
-//	}
-//	return 0.0;
-//}
 
 class EarlyReverb
 {
@@ -75,15 +59,18 @@ public:
 	EarlyReverb();
 	~EarlyReverb();
 	//double *lpf_coef;
+	unsigned int total_length=2000;
 	double *delay_length;
 	double after_lpf_delay = 0;
-	DelayLine ER_delay_line;
+	DelayLine *ER_delay_line;
 	Biquad lpf;
 	void setLpf(double *_lpf_b, double *_lpf_a) {
 		//lpf_coef
 		lpf.setCoeffs(_lpf_b, _lpf_a);
 	}
-	void setDelay(double *_delay_length) {
+	void setDelay(unsigned int _total_length,double *_delay_length) {
+		total_length = _total_length;
+		ER_delay_line = new DelayLine(total_length);
 		delay_length = new double[5];
 		for (size_t i = 0; i < 5; i++)
 		{
@@ -91,22 +78,29 @@ public:
 		}
 	}
 
-	void init(double *_lpf,double *_delay_length) {
-		setLpf();
-		setDelay(_delay_length);
+	void init(double *_lpf_b,double *_lpf_a,unsigned int _total_length,double *_delay_length) {
+		setLpf(_lpf_b,_lpf_a);
+		setDelay(_total_length,_delay_length);
 	}
 	double getEarlyDelay() {
 		return after_lpf_delay;
 	}
 	double run_by_sample(double data) {
-		after_lpf_delay = ER_delay_line.delay_by_sample( lpf.filter(data) );
+		after_lpf_delay = ER_delay_line->delay_by_sample( lpf.filter(data) );
 		// select the delay sample
 		double output_temp = 0;
 		for (size_t i = 0; i < 5; i++)
 		{
-			output_temp += ER_delay_line.getSample(delay_length[i]);
+			output_temp += ER_delay_line->getSample(delay_length[i]);
 		}
 		return output_temp / 5.0;
+	}
+	double run_by_frame(std::vector<double> data_in, std::vector<double> &data_out) {
+		for (size_t n = 0; n < data_in.size(); n++)
+		{
+			data_out.at(n) = run_by_sample(data_in.at(n));
+		}
+		return 0;
 	}
 private:
 
