@@ -1,19 +1,23 @@
 // FDN, feedback delay network unit
 #include <vector>
-
-
-//#include "DelayLine.hpp"
+#include "DelayLine.hpp"
 class FDN
 {
 public:
-	double *Bn;		// pre gain,b
+	double *Bn;				// pre gain,b
 	double *Cn;
 	double *Gn;
 	double *Un;
 	double **Jn;
 	unsigned int* delay_length;
-	double **An;// feedback matrix
+	double **An;			// feedback matrix
+	double fs = 48000;
 	size_t nChannel = 4;
+
+	DelayLine *delay_line;
+	double* sum_of_an;
+	double* after_delay;
+	////
 	void setJn() {
 		// default Jn initialized method
 		// initialize Jn
@@ -79,7 +83,7 @@ public:
 			delay_line[n].init(delay_length[n]);
 		}
 	}
-	int init(unsigned int num_of_channels, double *_Bn, double *_Cn, double *_Gn,unsigned int* _delay_length) {
+	int init_fdn(unsigned int num_of_channels, double *_Bn, double *_Cn, double *_Gn,unsigned int* _delay_length) {
 		nChannel = num_of_channels;
 		setBn(_Bn);
 		setCn(_Cn);
@@ -126,27 +130,21 @@ public:
 			data_out.at(n) = run_by_sample(data_in.at(n));
 		}
 	}
-	FDN();
-	~FDN();
+	FDN() {};
+	~FDN() {
+		delete[] Jn;
+		delete[] An;
+		delete[] Bn;		// pre gain,b
+		delete[] Cn;
+		delete[] Gn;
+		delete[] Un;
+		delete[] sum_of_an;
+		delete[] after_delay;
+	};
 	//updateAn();
+
+
 private:
-	DelayLine * delay_line;
-	double* sum_of_an ;
-	double* after_delay ;
 };
 
-FDN::FDN()
-{
-}
 
-FDN::~FDN()
-{
-	delete[] Jn;
-	delete[] An;
-	delete[] Bn;		// pre gain,b
-	delete[] Cn;
-	delete[] Gn;
-	delete[] Un;
-	delete[] sum_of_an;
-	delete[] after_delay;
-}

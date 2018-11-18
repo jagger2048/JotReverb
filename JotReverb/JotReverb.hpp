@@ -7,10 +7,7 @@ class JotReverb {
 public:
 	double fs = 48000;
 	int nFrame = 256;						// the number fo data in per frame
-	//double Un[4] = { 0.4,0.2,0.6,0.8 };
 	double Un[4] = { 1,1,1,1 };
-	//double J4[4][4] = { { 0,0,1,0 },{ 0,1,0,0 },{ 1,0,0,0 },{ 0,0,0,1 } };
-	//double J4[4][4] = { { 0,0,0,1 },{ 0,0,1,0 },{ 0,1,0,0 },{ 1,0,0,0 } };
 	double J4[4][4] = { { 1,0,0,0 },{ 0,1,0,0 },{ 0,0,1,0 },{ 0,0,0,1 } };
 	double gain_b[4] = { 0.25,0.25,0.25,0.25 };
 	double gain_c[4] = { 1,1,1,1 };

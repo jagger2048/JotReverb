@@ -32,5 +32,8 @@
     <ClCompile Include="myReverb.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="myJotReverb.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

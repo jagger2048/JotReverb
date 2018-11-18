@@ -59,7 +59,7 @@ public:
 	EarlyReverb();
 	~EarlyReverb();
 	//double *lpf_coef;
-	unsigned int total_length=2000;
+	unsigned int total_length= 2000;
 	double *delay_length;
 	double after_lpf_delay = 0;
 	DelayLine *ER_delay_line;
