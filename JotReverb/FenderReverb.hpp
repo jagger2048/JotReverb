@@ -1,5 +1,6 @@
 // fender's reverb based on FDN algorithm
 // in-> to mono -> predelay-> prelpf -> FDN -> steteo output
+#pragma once
 #include <vector>
 //  biquad
 class Biquad {
@@ -70,7 +71,9 @@ public:
 	}
 	void setDelay(unsigned int _total_length,double *_delay_length) {
 		total_length = _total_length;
-		ER_delay_line = new DelayLine(total_length);
+		ER_delay_line = new DelayLine;
+		ER_delay_line->init(total_length);
+
 		delay_length = new double[5];
 		for (size_t i = 0; i < 5; i++)
 		{

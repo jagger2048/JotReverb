@@ -1,4 +1,6 @@
-﻿#include <vector>
+﻿#pragma once
+
+#include <vector>
 // Todo:
 // 将延时线换成使用 DelayLine 类
 // 重新封装各类参数

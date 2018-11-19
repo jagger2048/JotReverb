@@ -1,14 +1,16 @@
+#pragma once
 #include <iostream>
 
 class DelayLine
 {
 	// Delay line based on circular queue
 public:
-	DelayLine(unsigned int N);
+	//DelayLine(unsigned int N);
 	DelayLine() {};
-	~DelayLine();
-	void delay_by_sample(double data_to_push, double &after_delay);
-	double delay_by_sample(double data_to_push);
+	virtual ~DelayLine();
+
+	virtual void delay_by_sample(double data_to_push, double &after_delay);
+	virtual double delay_by_sample(double data_to_push);
 	double getEnd();
 	int init(unsigned int N);
 	double getSample(unsigned int N) {
@@ -52,10 +54,10 @@ inline int DelayLine::init(unsigned int N) {
 	return 0;
 }
 
-DelayLine::DelayLine(unsigned int N)
-{
-	init(N);
-}
+//DelayLine::DelayLine(unsigned int N)
+//{
+//	init(N);
+//}
 
 DelayLine::~DelayLine()
 {

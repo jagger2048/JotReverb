@@ -24,15 +24,18 @@
     <ClInclude Include="include\AudioFile.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="FDN.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="myJotReverb.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="myReverb.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="myJotReverb.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
