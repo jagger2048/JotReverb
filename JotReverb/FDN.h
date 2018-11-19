@@ -1,6 +1,5 @@
 // FDN, feedback delay network unit
 #pragma once
-
 #include <vector>
 #include "DelayLine.hpp"
 class FDN
@@ -18,7 +17,7 @@ public:
 	DelayLine *delay_line;
 	double* sum_of_an;
 	double* after_delay;
-
+	double fdn_dw = 0.5;	// feedforward factor
 	////
 	void setJn();
 	void setUn();
@@ -29,7 +28,7 @@ public:
 	void setDelayLine(unsigned int *_delay_length);
 	int init_fdn(unsigned int num_of_channels, double *_Bn, double *_Cn, double *_Gn, unsigned int* _delay_length);
 	virtual double run_by_sample(double data_in);
-	void run_by_frame(std::vector<double> data_in, std::vector<double> &data_out);
+	virtual void run_by_frame(std::vector<double> data_in, std::vector<double> &data_out);
 
 	FDN();
 	virtual ~FDN();

@@ -114,7 +114,7 @@ inline double FDN::run_by_sample(double data_in) {
 	{
 		output_temp += after_delay[n] * Cn[n];
 	}
-	return output_temp + 0.5*data_in;
+	return output_temp + fdn_dw *data_in;
 }
 
 inline void FDN::run_by_frame(std::vector<double> data_in, std::vector<double>& data_out) {

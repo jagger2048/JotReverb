@@ -96,8 +96,11 @@ public:
 		{
 			output_temp += ER_delay_line->getSample(delay_length[i]);
 		}
-		return output_temp / 5.0;
+		//return output_temp / 5.0;
+		return output_temp ;
 	}
+
+	// 
 	double run_by_frame(std::vector<double> data_in, std::vector<double> &data_out) {
 		for (size_t n = 0; n < data_in.size(); n++)
 		{

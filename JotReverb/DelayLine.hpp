@@ -9,14 +9,14 @@ public:
 	DelayLine() {};
 	virtual ~DelayLine();
 
-	virtual void delay_by_sample(double data_to_push, double &after_delay);
-	virtual double delay_by_sample(double data_to_push);
+	void delay_by_sample(double data_to_push, double &after_delay);
+	double delay_by_sample(double data_to_push);
 	double getEnd();
 	int init(unsigned int N);
 	double getSample(unsigned int N) {
 		return delay_line[(cur_pos + N ) % delay_line_length];
 	}
-private:
+//private:
 	unsigned int cur_pos = 0;
 	unsigned int delay_line_length;
 	double *delay_line;
@@ -30,7 +30,7 @@ void DelayLine::delay_by_sample(double data_to_push, double & after_delay)
 	after_delay = delay_line[cur_pos];					// pop the dealyed data
 	delay_line[cur_pos] = data_to_push;					// push data into the delay line
 	cur_pos = (cur_pos + 1) % delay_line_length;		// update the pos
-
+	//std::cout << cur_pos << std::endl;
 }
 
 inline double DelayLine::delay_by_sample(double data_to_push)
