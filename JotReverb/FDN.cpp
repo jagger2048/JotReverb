@@ -35,10 +35,10 @@ inline void FDN::setAn() {
 		An[n] = new double[nChannel] {};
 	}
 	// compute the matix Un*Un'	,note that Un is a column vector
-	// assume the Un has 4 rows
-	double temp_matrix[4][4] = { 0 };
-	for (size_t nRow = 0; nRow != 4; ++nRow) {
-		for (size_t nColumn = 0; nColumn != 4; ++nColumn) {
+	// assume the max Un has 16 rows
+	double temp_matrix[16][16] = { 0 };
+	for (size_t nRow = 0; nRow != nChannel; ++nRow) {
+		for (size_t nColumn = 0; nColumn != nChannel; ++nColumn) {
 			temp_matrix[nRow][nColumn] = Un[nColumn] * Un[nColumn];
 		}
 	}
@@ -84,6 +84,7 @@ inline int FDN::init_fdn(unsigned int num_of_channels, double * _Bn, double * _C
 	setUn();
 	setJn();
 	setAn();
+	
 	setDelayLine(_delay_length);
 
 	sum_of_an = new double[nChannel] {};

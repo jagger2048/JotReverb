@@ -2,6 +2,7 @@
 // in-> to mono -> predelay-> prelpf -> FDN -> steteo output
 #pragma once
 #include <vector>
+#include "myJotReverb.h"
 //  biquad
 class Biquad {
 public:
@@ -63,6 +64,9 @@ public:
 	unsigned int total_length= 2000;
 	double *delay_length;
 	double after_lpf_delay = 0;
+	//double dry_wet_rate = 0.5;
+	double predelay_dw = 0.4;		// predelay dry wet rate
+
 	DelayLine *ER_delay_line;
 	Biquad lpf;
 	void setLpf(double *_lpf_b, double *_lpf_a) {
@@ -77,37 +81,47 @@ public:
 		delay_length = new double[5];
 		for (size_t i = 0; i < 5; i++)
 		{
+			// 5 channels
 			delay_length[i] = _delay_length[i];
 		}
 	}
 
-	void init(double *_lpf_b,double *_lpf_a,unsigned int _total_length,double *_delay_length) {
+	void ER_init(double *_lpf_b,double *_lpf_a,unsigned int _total_length,double *_delay_length) {
 		setLpf(_lpf_b,_lpf_a);
 		setDelay(_total_length,_delay_length);
 	}
 	double getEarlyDelay() {
 		return after_lpf_delay;
 	}
-	double run_by_sample(double data) {
-		after_lpf_delay = ER_delay_line->delay_by_sample( lpf.filter(data) );
+	double run_by_sample(double data, double &_after_lpf_delay,double &_select_delay) {
+
+		// pre dry wet rate is set to 0.5
+		after_lpf_delay = ER_delay_line->delay_by_sample( data * predelay_dw + lpf.filter(data) );
+
 		// select the delay sample
 		double output_temp = 0;
 		for (size_t i = 0; i < 5; i++)
 		{
 			output_temp += ER_delay_line->getSample(delay_length[i]);
 		}
-		//return output_temp / 5.0;
-		return output_temp ;
+		// output_temp should pass a allpass filter
+		// To be implement ......
+
+		_after_lpf_delay = after_lpf_delay;
+		_select_delay = output_temp;
+
+		return after_lpf_delay;
+		//return output_temp;
 	}
 
-	// 
-	double run_by_frame(std::vector<double> data_in, std::vector<double> &data_out) {
-		for (size_t n = 0; n < data_in.size(); n++)
-		{
-			data_out.at(n) = run_by_sample(data_in.at(n));
-		}
-		return 0;
-	}
+//  暂时不用 frame process
+//double run_by_frame(std::vector<double> data_in, std::vector<double> &data_out) {
+//	for (size_t n = 0; n < data_in.size(); n++)
+//	{
+//		data_out.at(n) = run_by_sample(data_in.at(n),);
+//	}
+//	return 0;
+//}
 private:
 
 };
@@ -118,4 +132,127 @@ EarlyReverb::EarlyReverb()
 
 EarlyReverb::~EarlyReverb()
 {
+}
+
+class FenderRev :public FDN
+{
+public:
+	EarlyReverb ER;
+	double *fr_lpf_b;
+	double *fr_lpf_a;
+	double fr_dry_wet_rate = 0.5;
+
+	double * lpf_cache;
+	double *after_lpf;
+
+	int FR_init(double fr) {
+		ER.ER_init(new double[3]{ 0.4566722944641210, 0, 0 },				// lpf'b
+			new double[3]{ 1, -0.444124594801, 0 },					// lpf'a
+			2400,													// total delay length
+			new double[5]{ 1901,2011,2113,2203,2333 }				// select in 5 channels
+		);
+		nChannel = 8;
+		fs = fr;
+		init_fdn(
+			8,												// number of channels
+			new double[8]{ 1,1,1,1,1,1,1,1 },				// b
+			//new double[8]{ 1, 1, 1, 1,1,1,1,1 },			// c
+			new double[8]{
+				0.9385798540696482, 0.9569348654119887, 0.9661747902651412, 0.9604810809978065,
+				0.9025044632215804, 0.8968737228960622, 0.9298475704611008, 0.9106079155648642
+			},			// c
+			new double[8]{ 1, 1, 1, 1,1, 1, 1, 1 },			// g
+			new unsigned int[8]{ 2011,2113,2203,2333,3089, 3187, 3323, 3407 }	// delay line length
+
+		);
+
+		// set fdn's an
+
+		An = new double* [nChannel] {};
+		for (size_t n = 0; n < nChannel; n++)
+		{
+			An[n] = new double[nChannel] {};
+		}
+		for (size_t i = 0; i < nChannel; i++)
+		{
+			for (size_t j = 0; j < nChannel; j++)
+			{
+				An[i][j] = -0.25;
+				if (j == nChannel - i-1) An[i][j] = 0.75;
+			}
+		}
+
+		// Y(n)=Bp*Y(n-1)+Bp_x*X(n)，其中 X(n)为延迟之后的输出
+		fr_lpf_b = new double[nChannel] { // bp
+			0.09416941618611564, 0.1167825571171863, 0.1312036766710140, 0.1258676773153445,
+				0.06932681600569191, 0.06648417682286377, 0.09667525158390457, 0.07923379711870723
+		};
+		fr_lpf_a = new double[nChannel] { // bpx
+			0.9058305838138844, 0.8832174428828137, 0.8687963233289859, 0.8741323226846556,
+				0.9306731839943081, 0.9335158231771362, 0.9033247484160955, 0.9207662028812927
+		};
+
+		lpf_cache = new double[nChannel] {};
+		after_lpf = new double[nChannel] {};
+		return 0;
+	};
+	double run_by_sample(double data_in) {
+		// Note!!
+		//double after_er_delay = 0, select_delay = 0;
+		double after_er_delay = data_in;
+		double select_delay = data_in;
+		//ER.run_by_sample(data_in, after_er_delay, select_delay);
+
+		for (size_t n = 0; n < nChannel; n++)
+		{
+			delay_line[n].delay_by_sample(Bn[n] * after_er_delay + Gn[n] * sum_of_an[n], after_delay[n]);
+			// Y_n  = b * Y_(n-1) + a * X_n
+			after_lpf[n] = fr_lpf_b[n] * lpf_cache[n] + fr_lpf_a[n] * after_delay[n];
+			lpf_cache[n] = after_lpf[n]; // 这里可以优化
+			after_lpf[n] = after_delay[n];
+		}
+		//	update sum_of_an
+		for (size_t nRow = 0; nRow < nChannel; nRow++)
+		{
+			double sum_temp = 0;
+			for (size_t nCloumn = 0; nCloumn < nChannel; nCloumn++)
+			{
+				//sum_temp = sum_temp +after_delay[nCloumn] * An[nRow][nCloumn];
+				sum_temp += after_lpf[nCloumn] * An[nRow][nCloumn];
+			}
+			sum_of_an[nRow] = sum_temp;
+		}
+		//	output
+		double output_temp = 0;
+		for (size_t n = 0; n < nChannel; n++)
+		{
+			output_temp += after_lpf[n] * Cn[n];
+		}
+		// after_lpf-> c -> matrix -> stereo output-> DCB -> output 
+		// miss 2 operates
+		return output_temp + 0.5 * select_delay;		// feedforward factor is 0.5 
+												//return output_temp;
+
+	}
+	void run_by_frame(std::vector<double> data_in, std::vector<double>& data_out) {
+		for (size_t i = 0; i < data_in.size(); i++)
+		{
+			data_out.at(i) = run_by_sample(data_in.at(i));
+		}
+	}
+	FenderRev();
+	virtual ~FenderRev();
+
+private:
+
+};
+
+FenderRev::FenderRev()
+{
+}
+
+FenderRev::~FenderRev()
+{
+	delete [] fr_lpf_b;
+	delete[] fr_lpf_a;
 }

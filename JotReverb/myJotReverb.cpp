@@ -23,12 +23,13 @@ inline int mJotReverb::default_init() {
 	init_fdn(
 		4,												// number of channels
 		new double[4]{ 1,1,1,1},		// b
+		//new double[4]{ 0.5,0.5,0.5,0.5},		// b
 		//new double[8]{ 1,1,1,1,1,1,1,1 },		// b
-		new double[4]{ 1, 1, 1, 1},					// c
+		new double[4]{ 0.9, 0.9, 0.9, 0.9},					// c
 		//new double[8]{ 1, 1, 1, 1,1,1,1,1 },					// c
-		new double[4]{ 1, 1, 1, 1 },		// g
+		new double[4]{ 0.9, 0.9, 0.9, 0.9 },		// g
 		//new double[8]{ 1, 1, 1, 1,1, 1, 1, 1 },		// g
-		new unsigned int[4]{ 3089, 3187, 3323, 3407 }	// delay line length
+		new unsigned int[4]{ 2011,2113,2203,2333 }	// delay line length
 		//new unsigned int[8]{ 2011,2113,2203,2333,3089, 3187, 3323, 3407 }	// delay line length
 	);
 	after_lpf = new double[nChannel];
@@ -40,8 +41,8 @@ inline double mJotReverb::run_by_sample(double data_in) {
 	for (size_t n = 0; n < nChannel; n++)
 	{
 		delay_line[n].delay_by_sample(Bn[n] * data_in + Gn[n] * sum_of_an[n], after_delay[n]);
-		after_lpf[n] = after_delay[n] * gi[n] * (1 - bi[n]) + bi[n] * lpf_cache[n];
-		//after_lpf[n] = after_delay[n];
+		after_lpf[n] = after_delay[n] * gi[n] * (1.0 - bi[n]) + bi[n] * lpf_cache[n];
+		lpf_cache[n] = after_lpf[n]  * 0.9;
 	}
 	//	update sum_of_an
 	for (size_t nRow = 0; nRow < nChannel; nRow++)
@@ -61,7 +62,7 @@ inline double mJotReverb::run_by_sample(double data_in) {
 		output_temp += after_lpf[n] * Cn[n];
 	}
 
-	return output_temp + 0.5 * data_in;		// feedforward factor is 0.5 
+	return output_temp + 0.6 * data_in;		// feedforward factor is 0.5 
 	//return output_temp;
 
 }
