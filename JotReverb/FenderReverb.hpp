@@ -64,7 +64,6 @@ public:
 	unsigned int total_length= 2000;
 	double *delay_length;
 	double after_lpf_delay = 0;
-	//double dry_wet_rate = 0.5;
 	double predelay_dw = 0.4;		// predelay dry wet rate
 
 	DelayLine *ER_delay_line;
@@ -110,18 +109,9 @@ public:
 		_after_lpf_delay = after_lpf_delay;
 		_select_delay = output_temp;
 
-		return after_lpf_delay;
-		//return output_temp;
+		return data;
 	}
 
-//  暂时不用 frame process
-//double run_by_frame(std::vector<double> data_in, std::vector<double> &data_out) {
-//	for (size_t n = 0; n < data_in.size(); n++)
-//	{
-//		data_out.at(n) = run_by_sample(data_in.at(n),);
-//	}
-//	return 0;
-//}
 private:
 
 };
@@ -144,9 +134,13 @@ public:
 
 	double * lpf_cache;
 	double *after_lpf;
+	double CH[2][8] = { {1,1,-1,-1,1,1,-1,-1 },{1,-1,1,-1,1,-1,1,-1 } };
+
+	double DCB_pre_in[2] = {};
+	double DCB_out[2]{};
 
 	int FR_init(double fr) {
-		ER.ER_init(new double[3]{ 0.4566722944641210, 0, 0 },				// lpf'b
+		ER.ER_init(new double[3]{ 0.4566722944641210, 0, 0 },		// lpf'b
 			new double[3]{ 1, -0.444124594801, 0 },					// lpf'a
 			2400,													// total delay length
 			new double[5]{ 1901,2011,2113,2203,2333 }				// select in 5 channels
@@ -155,13 +149,15 @@ public:
 		fs = fr;
 		init_fdn(
 			8,												// number of channels
-			new double[8]{ 1,1,1,1,1,1,1,1 },				// b
+			//new double[8]{ 1,1,1,1,1,1,1,1 },				// b
+			new double[8]{ 0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5 },// b
 			//new double[8]{ 1, 1, 1, 1,1,1,1,1 },			// c
 			new double[8]{
 				0.9385798540696482, 0.9569348654119887, 0.9661747902651412, 0.9604810809978065,
 				0.9025044632215804, 0.8968737228960622, 0.9298475704611008, 0.9106079155648642
 			},			// c
-			new double[8]{ 1, 1, 1, 1,1, 1, 1, 1 },			// g
+			//new double[8]{ 1, 1, 1, 1,1, 1, 1, 1 },			// g
+			new double[8]{ 0.125,0.125,0.125,0.125,0.125,0.125,0.125,0.125 },			// g
 			new unsigned int[8]{ 2011,2113,2203,2333,3089, 3187, 3323, 3407 }	// delay line length
 
 		);
@@ -197,19 +193,14 @@ public:
 		return 0;
 	};
 	double run_by_sample(double data_in) {
-		// Note!!
-		//double after_er_delay = 0, select_delay = 0;
-		double after_er_delay = data_in;
-		double select_delay = data_in;
-		//ER.run_by_sample(data_in, after_er_delay, select_delay);
 
+		double after_er_delay = 0, select_delay = 0;
+		double original = ER.run_by_sample(data_in, after_er_delay, select_delay);
 		for (size_t n = 0; n < nChannel; n++)
 		{
 			delay_line[n].delay_by_sample(Bn[n] * after_er_delay + Gn[n] * sum_of_an[n], after_delay[n]);
 			// Y_n  = b * Y_(n-1) + a * X_n
-			after_lpf[n] = fr_lpf_b[n] * lpf_cache[n] + fr_lpf_a[n] * after_delay[n];
-			lpf_cache[n] = after_lpf[n]; // 这里可以优化
-			after_lpf[n] = after_delay[n];
+			after_lpf[n] = fr_lpf_b[n] * after_lpf[n] + fr_lpf_a[n] * after_delay[n];
 		}
 		//	update sum_of_an
 		for (size_t nRow = 0; nRow < nChannel; nRow++)
@@ -217,21 +208,30 @@ public:
 			double sum_temp = 0;
 			for (size_t nCloumn = 0; nCloumn < nChannel; nCloumn++)
 			{
-				//sum_temp = sum_temp +after_delay[nCloumn] * An[nRow][nCloumn];
 				sum_temp += after_lpf[nCloumn] * An[nRow][nCloumn];
 			}
 			sum_of_an[nRow] = sum_temp;
 		}
 		//	output
 		double output_temp = 0;
+		double left = 0, right = 0;
 		for (size_t n = 0; n < nChannel; n++)
 		{
+			left += after_lpf[n] * CH[0][n];
+			right += after_lpf[n] * CH[1][n];
 			output_temp += after_lpf[n] * Cn[n];
 		}
 		// after_lpf-> c -> matrix -> stereo output-> DCB -> output 
-		// miss 2 operates
-		return output_temp + 0.5 * select_delay;		// feedforward factor is 0.5 
-												//return output_temp;
+		// DCB output
+		// DCB_out(n) = DCB_in(n) - DCB_in(n - 1) + 0.99* DCB_out(n - 1)
+		DCB_out[0] = left - DCB_pre_in[0] + 0.99* DCB_out[0];
+		DCB_pre_in[0] = left;
+		DCB_out[1] = right - DCB_pre_in[1] + 0.99* DCB_out[1];
+		DCB_pre_in[1] = right;
+
+		// output left channel 
+		return DCB_out[0] + 0.5*after_er_delay;
+		//return DCB_out[1] + 0.5*after_er_delay;
 
 	}
 	void run_by_frame(std::vector<double> data_in, std::vector<double>& data_out) {
@@ -256,3 +256,17 @@ FenderRev::~FenderRev()
 	delete [] fr_lpf_b;
 	delete[] fr_lpf_a;
 }
+
+
+// early reverb usage.
+//EarlyReverb ER;
+//ER.init(new double[3]{0.014401440346511,0.028802880693022,0.014401440346511},	// lpf'b
+//		new double[3]{1,-1.632993161855452,0.690598923241497},					// lpf'a
+//		2400,																	// total delay length
+//		new double[5]{1901,2011,2113,2203,2333}									// 5 channels		
+//		);	
+////ER.ER_init(new double[3]{0.4566722944641210 * 1.2171,0,0},		// lpf'b
+////		new double[3]{1,-0.444124594801,0},					// lpf'a
+////		2400,																	// total delay length
+////		new double[5]{1901,2011,2113,2203,2333}									// 5 channels		
+////		);

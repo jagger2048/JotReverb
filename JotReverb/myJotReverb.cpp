@@ -29,9 +29,18 @@ inline int mJotReverb::default_init() {
 		//new double[8]{ 1, 1, 1, 1,1,1,1,1 },					// c
 		new double[4]{ 0.9, 0.9, 0.9, 0.9 },		// g
 		//new double[8]{ 1, 1, 1, 1,1, 1, 1, 1 },		// g
-		new unsigned int[4]{ 2011,2113,2203,2333 }	// delay line length
+		new unsigned int[4]{ 3089, 3187, 3323, 3407 }	// delay line length
+		//new unsigned int[4]{ 2011,2113,2203,2333 }	// delay line length
 		//new unsigned int[8]{ 2011,2113,2203,2333,3089, 3187, 3323, 3407 }	// delay line length
 	);
+	for (size_t i = 0; i < 4; i++)
+	{
+		Cascaded_AP[i] = new AP;
+	}
+	Cascaded_AP[0]->init(0.5, 225);
+	Cascaded_AP[1]->init(0.5, 556);
+	Cascaded_AP[2]->init(0.5, 441);
+	Cascaded_AP[3]->init(0.5, 341);
 	after_lpf = new double[nChannel];
 	updateLpfCoeff();
 	return 0;
@@ -42,7 +51,7 @@ inline double mJotReverb::run_by_sample(double data_in) {
 	{
 		delay_line[n].delay_by_sample(Bn[n] * data_in + Gn[n] * sum_of_an[n], after_delay[n]);
 		after_lpf[n] = after_delay[n] * gi[n] * (1.0 - bi[n]) + bi[n] * lpf_cache[n];
-		lpf_cache[n] = after_lpf[n]  * 0.9;
+		lpf_cache[n] = after_lpf[n]  * 0.99;
 	}
 	//	update sum_of_an
 	for (size_t nRow = 0; nRow < nChannel; nRow++)
@@ -61,10 +70,13 @@ inline double mJotReverb::run_by_sample(double data_in) {
 	{
 		output_temp += after_lpf[n] * Cn[n];
 	}
+	// add a cascaded allpass filter
+	//for (size_t i = 0; i < 4; i++)
+	//{
+		output_temp = Cascaded_AP[1]->run_by_sample(output_temp);
+	//}
 
-	return output_temp + 0.6 * data_in;		// feedforward factor is 0.5 
-	//return output_temp;
-
+	return output_temp + 0.5 * data_in;		// feedforward factor is 0.5 
 }
 
 void mJotReverb::run_by_frame(std::vector<double> data_in, std::vector<double> &data_out)
