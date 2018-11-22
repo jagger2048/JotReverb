@@ -23,14 +23,15 @@ inline int mJotReverb::default_init() {
 	init_fdn(
 		4,												// number of channels
 		new double[4]{ 1,1,1,1},		// b
-		//new double[4]{ 0.5,0.5,0.5,0.5},		// b
+		//new double[4]{ 0.6,0.6,0.6,0.6},		// b
 		//new double[8]{ 1,1,1,1,1,1,1,1 },		// b
 		new double[4]{ 0.9, 0.9, 0.9, 0.9},					// c
 		//new double[8]{ 1, 1, 1, 1,1,1,1,1 },					// c
-		new double[4]{ 0.9, 0.9, 0.9, 0.9 },		// g
+		new double[4]{ -0.9, 0.9, -0.9, 0.9 },		// g
 		//new double[8]{ 1, 1, 1, 1,1, 1, 1, 1 },		// g
-		new unsigned int[4]{ 3089, 3187, 3323, 3407 }	// delay line length
-		//new unsigned int[4]{ 2011,2113,2203,2333 }	// delay line length
+		//new unsigned int[4]{ 3089, 3187, 3323, 3407 }	// delay line length
+		//new unsigned int[4]{ 2557,2687,2713,2799 }	// delay line length
+		new unsigned int[4]{ 2011,2113,2203,2333 }	// delay line length
 		//new unsigned int[8]{ 2011,2113,2203,2333,3089, 3187, 3323, 3407 }	// delay line length
 	);
 	for (size_t i = 0; i < 4; i++)
