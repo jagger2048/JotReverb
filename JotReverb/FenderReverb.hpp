@@ -138,7 +138,7 @@ public:
 
 	double DCB_pre_in[2] = {};
 	double DCB_out[2]{};
-
+	double data_in_pre = 0;
 	int FR_init(double fr) {
 		ER.ER_init(new double[3]{ 0.4566722944641210, 0, 0 },		// lpf'b
 			new double[3]{ 1, -0.444124594801, 0 },					// lpf'a
@@ -193,9 +193,11 @@ public:
 		return 0;
 	};
 	double run_by_sample(double data_in) {
-
+		// TCF(n) = 0.2905694150420948*[X(n) - X(n - 1)] + X(n)
+		double TCF = 0.2905694150420948*(data_in - data_in_pre) + data_in;
+		data_in_pre = data_in;
 		double after_er_delay = 0, select_delay = 0;
-		double original = ER.run_by_sample(data_in, after_er_delay, select_delay);
+		double original = ER.run_by_sample(TCF, after_er_delay, select_delay);
 		for (size_t n = 0; n < nChannel; n++)
 		{
 			delay_line[n].delay_by_sample(Bn[n] * after_er_delay + Gn[n] * sum_of_an[n], after_delay[n]);

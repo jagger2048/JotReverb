@@ -74,10 +74,12 @@ private:
 	// f = roomsize= initial_room * sacle_room + offset_room = 0.5*0.28 + 0.7 ; f <0.98
 	double feedback[8] = { 0 };
 	double allpass_gain = 0.5;
-	double comb_sum_gain = 0.6;
+	double comb_sum_gain = 0.5;//0.7
 
 	unsigned int ap_coef[4] = { 225,556,441,341 };
-	unsigned int comb_coef[8] = { 1557,1617,1491,1422,1277,1356,1188,1116 };
+	//unsigned int ap_coef[4] = { 325,656,541,441 };
+	//unsigned int comb_coef[8] = { 1557,1617,1491,1422,1277,1356,1188,1116 };
+	unsigned int comb_coef[8] = { 1957,2017,1891,1822,1677,1756,1588,1516 };
 	LBCF parallel_comb[8];
 	AP cascaded_ap[4];
 
@@ -86,9 +88,9 @@ private:
 inline int myFreeReverb::init()
 {
 	// initialize the low_feedback comb filter and allpass filter
-	setDamp(0.84);
-	setFeedback(0.2);
-	setApplassGain(0.5);
+	setDamp(0.88); // 0.84
+	setFeedback(0.2);// 0.2
+	setApplassGain(0.6);
 
 	for (size_t nAp = 0; nAp != 4; nAp++) {
 		cascaded_ap[nAp].init(allpass_gain, ap_coef[nAp]);
