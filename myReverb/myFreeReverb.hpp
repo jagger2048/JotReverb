@@ -74,12 +74,13 @@ private:
 	// f = roomsize= initial_room * sacle_room + offset_room = 0.5*0.28 + 0.7 ; f <0.98
 	double feedback[8] = { 0 };
 	double allpass_gain = 0.5;
-	double comb_sum_gain = 0.5;//0.7
+	double comb_sum_gain = 0.7;//0.7
 
 	unsigned int ap_coef[4] = { 225,556,441,341 };
 	//unsigned int ap_coef[4] = { 325,656,541,441 };
 	//unsigned int comb_coef[8] = { 1557,1617,1491,1422,1277,1356,1188,1116 };
-	unsigned int comb_coef[8] = { 1957,2017,1891,1822,1677,1756,1588,1516 };
+	//unsigned int comb_coef[8] = { 1957,2017,1891,1822,1677,1756,1588,1516 };
+	unsigned int comb_coef[8] = { 2957,3017,2891,2822,2677,2756,3588,3516 };
 	LBCF parallel_comb[8];
 	AP cascaded_ap[4];
 
