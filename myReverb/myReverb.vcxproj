@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{AFFDA8B6-5CB7-42E4-B5FB-553D003B77C9}</ProjectGuid>
+    <ProjectGuid>{53F6980E-6CDF-4D7A-AD99-46120019307B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>JotReverb</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
@@ -105,7 +105,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\WorkSpace\Repository\JotReverb\JotReverb\include;D:\Repository\Reverb\JotReverb\JotReverb\include;D:\Repository\Reverb\JotReverb\JotReverb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Repository\Reverb\JotReverb\myReverb;D:\Repository\Reverb\JotReverb\myReverb\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

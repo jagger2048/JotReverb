@@ -3,7 +3,6 @@
 #include "stdafx.h"
 #include <math.h>
 #include "FDN.h"
-//#include "myFreeReverb.hpp"
 #include <vector>
 class mJotReverb:public FDN
 {
