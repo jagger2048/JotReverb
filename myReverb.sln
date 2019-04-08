@@ -3,12 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2000
 MinimumVisualStudioVersion = 10.0.40219.1
-
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FreeReverb", "FreeReverb\FreeReverb.vcxproj", "{BB28D4E4-DDA5-4CC4-B28F-0EF8C2010282}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "myReverb", "myReverb\myReverb.vcxproj", "{53F6980E-6CDF-4D7A-AD99-46120019307B}"
 EndProject
-
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GuitarReverb", "GuitarReverb\GuitarReverb.vcxproj", "{1C2852A2-A96F-40D2-83CC-422823B31FFA}"
 EndProject
 Global
@@ -27,7 +25,6 @@ Global
 		{BB28D4E4-DDA5-4CC4-B28F-0EF8C2010282}.Release|x64.Build.0 = Release|x64
 		{BB28D4E4-DDA5-4CC4-B28F-0EF8C2010282}.Release|x86.ActiveCfg = Release|Win32
 		{BB28D4E4-DDA5-4CC4-B28F-0EF8C2010282}.Release|x86.Build.0 = Release|Win32
-
 		{53F6980E-6CDF-4D7A-AD99-46120019307B}.Debug|x64.ActiveCfg = Debug|x64
 		{53F6980E-6CDF-4D7A-AD99-46120019307B}.Debug|x64.Build.0 = Debug|x64
 		{53F6980E-6CDF-4D7A-AD99-46120019307B}.Debug|x86.ActiveCfg = Debug|Win32
@@ -36,13 +33,14 @@ Global
 		{53F6980E-6CDF-4D7A-AD99-46120019307B}.Release|x64.Build.0 = Release|x64
 		{53F6980E-6CDF-4D7A-AD99-46120019307B}.Release|x86.ActiveCfg = Release|Win32
 		{53F6980E-6CDF-4D7A-AD99-46120019307B}.Release|x86.Build.0 = Release|Win32
-
-
+		{1C2852A2-A96F-40D2-83CC-422823B31FFA}.Debug|x64.ActiveCfg = Debug|x64
+		{1C2852A2-A96F-40D2-83CC-422823B31FFA}.Debug|x64.Build.0 = Debug|x64
+		{1C2852A2-A96F-40D2-83CC-422823B31FFA}.Debug|x86.ActiveCfg = Debug|Win32
+		{1C2852A2-A96F-40D2-83CC-422823B31FFA}.Debug|x86.Build.0 = Debug|Win32
 		{1C2852A2-A96F-40D2-83CC-422823B31FFA}.Release|x64.ActiveCfg = Release|x64
 		{1C2852A2-A96F-40D2-83CC-422823B31FFA}.Release|x64.Build.0 = Release|x64
 		{1C2852A2-A96F-40D2-83CC-422823B31FFA}.Release|x86.ActiveCfg = Release|Win32
 		{1C2852A2-A96F-40D2-83CC-422823B31FFA}.Release|x86.Build.0 = Release|Win32
-
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
