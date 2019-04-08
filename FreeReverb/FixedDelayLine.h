@@ -55,7 +55,7 @@ public:
 	}
 
 private:
-	static const int maxDelayTime = 2000;
+	static const int maxDelayTime = 4000;
 	float delayInSeconds;
 	unsigned int delayInSamples = 0;
 	unsigned int pos = 0;

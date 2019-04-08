@@ -53,7 +53,8 @@ class FreeAP
     float getOutput(float input)
     {
         auto dOut = d.getOutput();
-        auto out = -input + dOut;
+        //auto out = -input + dOut;
+        auto out = -g * input + dOut;
 
         d.tick(input + g * dOut);
 
@@ -96,8 +97,8 @@ class Freeverb
         // scale down
         out *= 0.125;
         // 4 in series
-        for (int i = 0; i < apAmount; i++)
-            out = ap[i].getOutput(out);
+  /*      for (int i = 0; i < apAmount; i++)
+            out = ap[i].getOutput(out);*/
 
         return out;
     }
@@ -122,7 +123,9 @@ class Freeverb
     const static int combAmount = 8;
     const static int apAmount = 4;
     const int combCoef[combAmount] = {1557, 1617, 1491, 1422, 1277, 1356, 1188, 1116};
+    //const int combCoef[combAmount] = {2557, 2617, 2491, 2422, 2277, 2356, 2188, 2116};
     const int apCoef[apAmount] = {225, 556, 441, 341};
+    //const int apCoef[apAmount] = {1225, 1556, 1441, 1341};
 
     LBCF comb[combAmount];
     FreeAP ap[apAmount];
