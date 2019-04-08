@@ -15,25 +15,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="FreeReverb.hpp">
+    <ClCompile Include="GuitarReverb.cpp">
       <Filter>源文件</Filter>
-    </ClInclude>
-    <ClInclude Include="FixedDelayLine.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="FreeReverb.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
+    <ClInclude Include="dr_wav.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="wavfile.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="delay_line.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="guitar_reverb.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
